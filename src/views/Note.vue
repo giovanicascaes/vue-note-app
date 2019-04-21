@@ -4,6 +4,22 @@
       <b-card no-body class="card" header-tag="header">
         <b-link slot="header" class="card-link" @click="handleDeleteNote">Delete</b-link>
         <b-card-body>
+          <div>
+            <b-badge v-for="tag in tags" :key="tag" class="mr-1">
+              {{tag}}
+              <a class="badge-remove" @click="removeTag(tag)">
+                <font-awesome-icon icon="times-circle"/>
+              </a>
+            </b-badge>
+          </div>
+          <b-input
+            v-model="tag"
+            @keyup.enter="handleAddTag"
+            placeholder="Add tag..."
+            class="no-border ml-1 mt-2"
+            size="sm"
+          />
+          <hr>
           <b-form-input
             v-model="title"
             @input="handleTitleChanged"
@@ -14,7 +30,7 @@
             v-model="content"
             @input="handleContentChanged"
             placeholder="Note content..."
-            rows="14"
+            rows="11"
             class="no-border"
           />
         </b-card-body>
@@ -30,11 +46,18 @@ export default {
   data() {
     return {
       title: "",
-      content: ""
+      content: "",
+      tag: ""
     };
   },
   computed: {
-    ...mapGetters(["activeNote"])
+    ...mapGetters(["activeNote"]),
+    tags() {
+      if (this.activeNote) {
+        return this.activeNote.tags;
+      }
+      return [];
+    }
   },
   watch: {
     activeNote: {
@@ -48,7 +71,13 @@ export default {
     }
   },
   methods: {
-    ...mapActions(["changeNoteTitle", "changeNoteContent", "deleteNote"]),
+    ...mapActions([
+      "changeNoteTitle",
+      "changeNoteContent",
+      "deleteNote",
+      "addTag",
+      "removeTag"
+    ]),
     handleTitleChanged() {
       this.changeNoteTitle(this.title);
     },
@@ -56,8 +85,14 @@ export default {
       this.changeNoteContent(this.content);
     },
     handleDeleteNote() {
-      this.deleteNote(this.activeNote.id);
+      this.deleteNote();
       this.$router.push("/");
+    },
+    handleAddTag() {
+      if (this.tag !== "") {
+        this.addTag(this.tag);
+        this.tag = null;
+      }
     }
   }
 };

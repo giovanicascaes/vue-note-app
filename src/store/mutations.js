@@ -16,8 +16,32 @@ export default {
   setFilterText: (state, payload) => {
     state.filterText = payload;
   },
-  deleteNote: (state, payload) => {
-    state.notes = state.notes.filter(note => note.id !== payload);
+  deleteNote: (state) => {
+    state.notes = state.notes.filter(note => note.id !== state.activeNoteId);
     state.activeNoteId = null;
+  },
+  addTag: (state, payload) => {
+    const { tags } = state.notes.find(note => note.id === state.activeNoteId);
+    if (!tags.includes(payload)) {
+      tags.push(payload);
+    }
+  },
+  removeTag: (state, payload) => {
+    const currentNote = state.notes.find(note => note.id === state.activeNoteId);
+    currentNote.tags = currentNote.tags.filter(tag => tag !== payload);
+  },
+  selectTag: (state, payload) => {
+    state.selectedTag = payload;
+  },
+  deleteTag: (state, payload) => {
+    state.notes.forEach((note) => {
+      const index = note.tags.indexOf(payload);
+      if (index > -1) {
+        note.tags.splice(index, 1);
+        if (state.selectedTag === payload) {
+          state.selectedTag = null;
+        }
+      }
+    });
   },
 };

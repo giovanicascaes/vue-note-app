@@ -14,7 +14,19 @@ export default {
   filterNotes: ({ commit }, payload) => {
     commit('setFilterText', payload);
   },
-  deleteNote: ({ commit }, payload) => {
-    commit('deleteNote', payload);
+  deleteNote: ({ commit }) => {
+    commit('deleteNote');
+  },
+  addTag: ({ commit }, payload) => {
+    commit('addTag', payload);
+  },
+  removeTag: ({ commit }, payload) => {
+    commit('removeTag', payload);
+  },
+  selectTag: ({ commit }, payload) => {
+    commit('selectTag', payload);
+  },
+  deleteTag: ({ commit }, payload) => {
+    commit('deleteTag', payload);
   },
 };
